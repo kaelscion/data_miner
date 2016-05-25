@@ -9,17 +9,12 @@ def get_recipe_data(links):
             html=urlopen(links).read()
             soup=BeautifulSoup(html,"lxml")
             recipe_title=soup.h1.get_text()
-            get_recipe_ingredients=soup.findAll('p')
+            get_recipe_ingredients=soup.find('p', attrs={'style':'margin-left: 40px;'})
             with open("C:/users/Jake/Desktop/contents.csv", 'w') as csvfile:
-                content_header=['Content']
+                content_header=['Title', 'Ingredients']
                 writer=csv.DictWriter(csvfile, fieldnames=content_header)
                 writer.writeheader()
-                for content in get_recipe_ingredients:
-                    writer.writerow({'Content':str(content)})
-            for ingredient in get_recipe_ingredients:
-                ingredient_soup=BeautifulSoup(str(ingredient), "lxml")
-                ingredients.append(ingredient_soup.get_text(strip=True))
-            print recipe_title
+                ingredient_list=get_recipe_ingredients.get_text()
+                writer.writerow({'Title':recipe_title.encode('utf-8').strip(), 'Ingredients':ingredient_list.encode('utf-8').strip()})
 
-        
 get_recipe_data("http://greatist.com/health/twice-baked-broccoli-and-kale-stuffed-potatoes")
